@@ -34,5 +34,21 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BlogApi.Controllers.BlogController",
+    "Method": "DeleteBlogger",
+    "RelativePath": "api/Blog",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

@@ -71,5 +71,25 @@ namespace BlogApi.Controllers
 
             return new {message = "Sikeres felvétel.", result = addNewBloggerDto };
         }
+
+        [HttpDelete]
+        public object DeleteBlogger(int id)
+        {
+            var connection = new MySqlConnection(ConnectionString);
+
+            connection.Open();
+
+            string sql = @"DELETE FROM `blogger` WHERE `id` = @id";
+
+            var cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@id",id);
+
+            cmd.ExecuteNonQuery();
+
+            connection.Close();
+
+            return new { message = "Sikeres törlés.", result = ""};
+        }
     }
 }
