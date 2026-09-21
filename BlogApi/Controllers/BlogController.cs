@@ -14,7 +14,7 @@ namespace BlogApi.Controllers
         public string ConnectionString = "server=localhost;uid=root;password=;database=blog13a;";
 
         [HttpGet]
-        public List<Blogger> GetBloggers() 
+        public List<Blogger> GetBloggers()
         {
             List<Blogger> bloggers = new List<Blogger>();
 
@@ -24,7 +24,7 @@ namespace BlogApi.Controllers
 
             string sql = "SELECT * FROM blogger;";
 
-            var cmd = new MySqlCommand(sql,connection);
+            var cmd = new MySqlCommand(sql, connection);
 
             var data = cmd.ExecuteReader();
 
@@ -36,7 +36,7 @@ namespace BlogApi.Controllers
                     Name = data.GetString("name"),
                     Email = data.GetString("email"),
                     Age = data.GetInt32("age"),
-                    Password=data.GetString("password"),
+                    Password = data.GetString("password"),
                     RegistrationTime = data.GetDateTime("registrationTime")
                 };
 
@@ -49,7 +49,7 @@ namespace BlogApi.Controllers
         }
 
         [HttpPost]
-        public object AddNewBlogger([FromBody]AddNewBloggerDto addNewBloggerDto)
+        public object AddNewBlogger([FromBody] AddNewBloggerDto addNewBloggerDto)
         {
             var connection = new MySqlConnection(ConnectionString);
 
@@ -69,7 +69,7 @@ namespace BlogApi.Controllers
 
             connection.Close();
 
-            return new {message = "Sikeres felvétel.", result = addNewBloggerDto };
+            return new { message = "Sikeres felvétel.", result = addNewBloggerDto };
         }
 
         [HttpDelete]
@@ -83,13 +83,82 @@ namespace BlogApi.Controllers
 
             var cmd = new MySqlCommand(sql, connection);
 
-            cmd.Parameters.AddWithValue("@id",id);
+            cmd.Parameters.AddWithValue("@id", id);
 
             cmd.ExecuteNonQuery();
 
             connection.Close();
 
-            return new { message = "Sikeres törlés.", result = ""};
+            return new { message = "Sikeres törlés.", result = "" };
+        }
+
+        [HttpPut]
+        public object UpdateBlogger([FromQuery] int id, UpdateBloggerDto updateBloggerDto)
+        {
+            var connection = new MySqlConnection(ConnectionString);
+
+            connection.Open();
+
+            var sql = @"UPDATE `blogger` SET `name`=@name,`email`=@email,`age`=@age,`password`=@password WHERE `id` = @id;";
+
+            var cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@name", updateBloggerDto.Name);
+            cmd.Parameters.AddWithValue("@email", updateBloggerDto.Email);
+            cmd.Parameters.AddWithValue("@age", updateBloggerDto.Age);
+            cmd.Parameters.AddWithValue("@password", updateBloggerDto.Password);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            cmd.ExecuteNonQuery();
+
+            connection.Close();
+
+            return new { message = "Sikeres frissítés", result = updateBloggerDto };
+        }
+
+        [HttpGet("byId")]
+        public object GetBloggerById(int id)
+        {
+            var connection = new MySqlConnection(ConnectionString);
+
+            connection.Open();
+
+            string sql = @"SELECT * FROM `blogger` WHERE `id` = @id";
+
+            var cmd = new MySqlCommand(sql, connection);
+
+            cmd.Parameters.AddWithValue("@id", id);
+
+            var datareader = cmd.ExecuteReader();
+
+            object? data = null;
+
+            if (datareader.Read() == true)
+            {
+
+                var blogger = new Blogger
+                {
+                    Id = datareader.GetInt32(0),
+                    Name = datareader.GetString(1),
+                    Email = datareader.GetString(2),
+                    Age = datareader.GetInt32(3),
+                    Password = datareader.GetString(4),
+                    RegistrationTime = datareader.GetDateTime(5)
+
+                };
+
+                data = new { message = "Sikeres lekérdezés.", result = blogger };
+            }
+            else
+            {
+                data = new { message = "Nincs ilyen blogger.", result = "" };
+            }
+
+            connection.Close();
+            return data;
+
+           
+           
         }
     }
 }
