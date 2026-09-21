@@ -18,5 +18,21 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "BlogApi.Controllers.BlogController",
+    "Method": "AddNewBlogger",
+    "RelativePath": "api/Blog",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "addNewBloggerDto",
+        "Type": "BlogApi.Models.DTOs.AddNewBloggerDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
